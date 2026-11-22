@@ -162,9 +162,44 @@ if __name__ == '__main__':
         client = SouShuBaClient(urlparse(url).hostname,
                                 os.environ.get('SOUSHUBA_USERNAME', "USERNAME"),
                                 os.environ.get('SOUSHUBA_PASSWORD', "PASSWORD"))
-        client.login()
-        client.space()
-        credit = client.credit()
+                client.login()
+        # --- 新增：自动随机找最新帖子回复赚金币 ---
+        import random
+        forum_url = f'https://{client.hostname}/forum.php?mod=guide&view=newthread'
+        guide_html = client.session.get(forum_url, headers=client._common_headers, verify=False).text
+        tids = list(set(re.findall(r'tid=(\d+)', guide_html)))
+        replies = [
+            "感谢楼主无私分享，找这本好久了，抱走慢慢看！",
+            "辛苦整理资源，书荒救星，先收藏下来再细品~",
+            "谢谢分享好书，排版看着很舒服，支持一波！",
+            "多谢楼主搬运，正好最近在找这个类型的，太及时了！",
+            "非常感谢分享，祝楼主生活愉快，好人一生平安！"
+        ]
+        random.shuffle(tids)
+        success_count = 0
+        for tid in tids:
+            if success_count >= 3:  # 每天最多回3贴，防风控
+                break
+            try:
+                thread_url = f'https://{client.hostname}/forum.php?mod=viewthread&tid={tid}'
+                t_html = client.session.get(thread_url, headers=client._common_headers, verify=False).text
+                fh_match = re.search(r'name="formhash"\s+value="([^"]+)"', t_html)
+                fid_match = re.search(r"fid\s*=\s*parseInt\('(\d+)'\)", t_html)
+                if not fh_match or not fid_match:
+                    continue
+                reply_url = f'https://{client.hostname}/forum.php?mod=post&action=reply&fid={fid_match.group(1)}&tid={tid}&extra=&replysubmit=yes&infloat=yes&handlekey=fastpost&inajax=1'
+                msg = random.choice(replies).encode('gbk', errors='ignore')
+                res = client.session.post(reply_url, data={'message': msg, 'formhash': fh_match.group(1), 'subject': ''}, headers=client._common_headers, verify=False).text
+                if '发布成功' in res or '回复发布成功' in res:
+                    success_count += 1
+                    logger.info(f'成功回复帖子 tid={tid}，第 {success_count} 贴完成！')
+                    time.sleep(random.randint(35, 65))
+            except Exception as err:
+                continue
+        logger.info(f'今日自动回复任务结束，共成功回复 {success_count} 贴')
+
+        
+        
         logger.info(f'{client.username} have {credit} coins!')
     except Exception as e:
         logger.error(e)
