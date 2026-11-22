@@ -154,11 +154,9 @@ class SouShuBaClient:
 
 if __name__ == '__main__':
     try:
-        redirect_url = get_refresh_url('http://' + os.environ.get('SOUSHUBA_HOSTNAME', 'www.soushu2035.com'))
-        time.sleep(2)
-        redirect_url2 = get_refresh_url(redirect_url)
-        url = get_url(redirect_url2)
+        url = 'https://' + os.environ.get('SOUSHUBA_HOSTNAME', '://'nyt6y.bew2459m.com')
         logger.info(f'{url}')
+
         client = SouShuBaClient(urlparse(url).hostname, "", "")
         client._common_headers['Cookie'] = os.environ.get('SOUSHUBA_COOKIE', '')
         import random
