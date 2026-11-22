@@ -189,8 +189,11 @@ if __name__ == '__main__':
                 if not fh_match or not fid_match:
                     continue
                 reply_url = f'https://{client.hostname}/forum.php?mod=post&action=reply&fid={fid_match.group(1)}&tid={tid}&extra=&replysubmit=yes&infloat=yes&handlekey=fastpost&inajax=1'
-                msg = random.choice(replies).encode('gbk', errors='ignore')
+                msg = random.choice(replies).encode('utf-8', errors='ignore')
                 res = client.session.post(reply_url, data={'message': msg, 'formhash': fh_match.group(1), 'subject': ''}, headers=client._common_headers, verify=False).text
+                logger.info(f'回帖返回结果: {res[:150]}')
+                break
+
                 if '发布成功' in res or '回复发布成功' in res:
                     success_count += 1
                     logger.info(f'成功回复帖子 tid={tid}，第 {success_count} 贴完成！')
