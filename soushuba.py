@@ -162,7 +162,7 @@ if __name__ == '__main__':
         client = SouShuBaClient(urlparse(url).hostname,
                                 os.environ.get('SOUSHUBA_USERNAME', "USERNAME"),
                                 os.environ.get('SOUSHUBA_PASSWORD', "PASSWORD"))
-                client.login()
+        client.login()
         import random
         forum_url = f'https://{client.hostname}/forum.php'
         resp_home = client.session.get(forum_url, headers=client._common_headers, verify=False)
