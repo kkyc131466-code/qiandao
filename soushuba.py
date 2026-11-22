@@ -159,10 +159,8 @@ if __name__ == '__main__':
         redirect_url2 = get_refresh_url(redirect_url)
         url = get_url(redirect_url2)
         logger.info(f'{url}')
-        client = SouShuBaClient(urlparse(url).hostname,
-                                os.environ.get('SOUSHUBA_USERNAME', "USERNAME"),
-                                os.environ.get('SOUSHUBA_PASSWORD', "PASSWORD"))
-        client.login()
+        client = SouShuBaClient(urlparse(url).hostname, "", "")
+        client._common_headers['Cookie'] = os.environ.get('SOUSHUBA_COOKIE', '')
         import random
         forum_url = f'https://{client.hostname}/forum.php'
         resp_home = client.session.get(forum_url, headers=client._common_headers, verify=False)
@@ -197,7 +195,7 @@ if __name__ == '__main__':
                     time.sleep(random.randint(35, 65))
             except Exception as err:
                 continue
-        logger.info(f'今日自动回复任务结束，共成功回复 {success_count} 贴')
+            logger.info(f'今日自动回复任务结束，共成功回复 {success_count} 贴')
 
         
         
