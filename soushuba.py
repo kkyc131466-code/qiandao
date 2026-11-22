@@ -162,8 +162,8 @@ if __name__ == '__main__':
         client = SouShuBaClient(urlparse(url).hostname,
                                 os.environ.get('SOUSHUBA_USERNAME', "USERNAME"),
                                 os.environ.get('SOUSHUBA_PASSWORD', "PASSWORD"))
-                client.login()
-        # --- 新增：自动随机找最新帖子回复赚金币 ---
+        client.login()
+        
         import random
         forum_url = f'https://{client.hostname}/forum.php?mod=guide&view=newthread'
         guide_html = client.session.get(forum_url, headers=client._common_headers, verify=False).text
@@ -178,7 +178,7 @@ if __name__ == '__main__':
         random.shuffle(tids)
         success_count = 0
         for tid in tids:
-            if success_count >= 3:  # 每天最多回3贴，防风控
+            if success_count >= 3:
                 break
             try:
                 thread_url = f'https://{client.hostname}/forum.php?mod=viewthread&tid={tid}'
@@ -200,7 +200,7 @@ if __name__ == '__main__':
 
         
         
-        logger.info(f'{client.username} have {credit} coins!')
+        
     except Exception as e:
         logger.error(e)
         sys.exit(1)
