@@ -154,7 +154,8 @@ class SouShuBaClient:
 
 if __name__ == '__main__':
     try:
-        url = 'https://' + os.environ.get('SOUSHUBA_HOSTNAME', '://'nyt6y.bew2459m.com')
+        url = 'https://' + os.environ.get('SOUSHUBA_HOSTNAME', 'nyt6y.bew2459m.com')
+
         logger.info(f'{url}')
 
         client = SouShuBaClient(urlparse(url).hostname, "", "")
