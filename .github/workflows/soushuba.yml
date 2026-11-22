@@ -13,7 +13,7 @@ jobs:
       SOUSHUBA_HOSTNAME: ${{ secrets.SOUSHUBA_HOSTNAME }}
       SOUSHUBA_USERNAME: ${{ secrets.SOUSHUBA_USERNAME }}
       SOUSHUBA_PASSWORD: ${{ secrets.SOUSHUBA_PASSWORD }}
-
+      SOUSHUBA_COOKIE: ${{ secrets.SOUSHUBA_COOKIE }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
