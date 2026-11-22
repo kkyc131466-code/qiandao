@@ -165,7 +165,8 @@ if __name__ == '__main__':
         client.login()
         
         import random
-        forum_url = f'https://{client.hostname}/forum.php?mod=guide&view=newthread'
+        forum_url = f'https://{client.hostname}/forum.php'
+
         guide_html = client.session.get(forum_url, headers=client._common_headers, verify=False).text
         tids = list(set(re.findall(r'tid=(\d+)', guide_html)))
         replies = [
